@@ -2,9 +2,9 @@ package models
 
 type Users struct {
 	Id       string `form:"id" json:"id"`
-	name     string `form:"name" json:"name"`
-	email    string `form:"email" json:"email"`
-	password string `form:"password" json:"password"`
+	Name     string `form:"name" json:"name"`
+	Email    string `form:"email" json:"email"`
+	Password string `form:"password" json:"password"`
 }
 
 type Response struct {

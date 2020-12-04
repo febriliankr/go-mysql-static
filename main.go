@@ -3,19 +3,20 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-	"net/http"
 	"go-mysql-react/helpers"
 	"go-mysql-react/models"
+	"log"
+	"net/http"
+
 	"github.com/gorilla/mux"
 )
 
 func returnAllUsers(w http.ResponseWriter, r *http.Request) {
-	var users Users
-	var arrUser []Users
-	var response Response
+	var users models.Users
+	var arrUser []models.Users
+	var response models.Response
 
-	db := connect()
+	db := helpers.ConnectDB()
 	defer db.Close()
 
 	rows, err := db.Query("Select id, name ,email, password from users")
@@ -24,7 +25,7 @@ func returnAllUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for rows.Next() {
-		if err := rows.Scan(&users.Id, &users.name, &users.email, &users.password); err != nil {
+		if err := rows.Scan(&users.Id, &users.Name, &users.Email, &users.Password); err != nil {
 			log.Fatal(err.Error())
 
 		} else {
@@ -42,12 +43,10 @@ func returnAllUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	fs := http.FileServer(http.Dir("./static"))
-	http.Handle("/", fs)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/getUsers", returnAllUsers).Methods("GET")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
-	fmt.Println("Connected to port 1234")
+	fmt.Println("Connected to http://localhost:3000")
 	http.ListenAndServe(":3000", r)
 }
